@@ -38,9 +38,9 @@ public class UserController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/login/{email}/{password}")
-    public ResponseEntity<UserDto> login(@PathVariable String email, @PathVariable String password ) throws LoginException {
-        return Optional.ofNullable(userService.getUserByEmailAndPassword(email, password)).map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
+    @PostMapping("/login")
+    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto) throws LoginException {
+        return Optional.ofNullable(userService.getUserByEmailAndPassword(userDto.getEmail(), userDto.getPassword())).map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.UNAUTHORIZED));
     }
 
