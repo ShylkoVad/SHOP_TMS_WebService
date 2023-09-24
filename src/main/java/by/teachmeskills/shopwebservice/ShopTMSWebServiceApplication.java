@@ -1,13 +1,11 @@
-package com.example.shop_tms_webservice;
+package by.teachmeskills.shopwebservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShopTmsWebServiceApplication {
-
+public class ShopTMSWebServiceApplication {
     public static void main(String[] args) {
-        SpringApplication.run(ShopTmsWebServiceApplication.class, args);
+        SpringApplication.run(ShopTMSWebServiceApplication.class, args);
     }
-
 }
