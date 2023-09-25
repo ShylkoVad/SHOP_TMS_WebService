@@ -1,6 +1,9 @@
 package by.teachmeskills.shopwebservice.services;
 
 import by.teachmeskills.shopwebservice.dto.ProductDto;
+import by.teachmeskills.shopwebservice.exceptions.ExportToFIleException;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -18,4 +21,7 @@ public interface ProductService {
     ProductDto createProduct(ProductDto productDto);
 
     void deleteProduct(int id);
+    List<ProductDto> importProductsFromCsv(MultipartFile file) throws Exception;
+
+    void exportProductsToCsv(HttpServletResponse response, int categoryId) throws ExportToFIleException;
 }

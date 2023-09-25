@@ -5,13 +5,27 @@ import by.teachmeskills.shopwebservice.dto.OrderDto;
 import by.teachmeskills.shopwebservice.dto.ProductDto;
 import by.teachmeskills.shopwebservice.dto.converters.OrderConverter;
 import by.teachmeskills.shopwebservice.dto.converters.ProductConverter;
+import by.teachmeskills.shopwebservice.exceptions.ExportToFIleException;
+import by.teachmeskills.shopwebservice.exceptions.ParsingException;
 import by.teachmeskills.shopwebservice.repositories.OrderRepository;
 import by.teachmeskills.shopwebservice.services.OrderService;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,5 +89,62 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void deleteOrder(int id) {
         orderRepository.delete(id);
+    }
+
+    @Override
+    public List<OrderDto> importOrdersFromCsv(MultipartFile file) {
+        List<OrderDto> csvOrders = parseCsv(file);
+        List<Order> orders = Optional.ofNullable(csvOrders)
+                .map(list -> list.stream()
+                        .map(orderConverter::fromDto)
+                        .toList())
+                .orElse(null);
+        if (Optional.ofNullable(orders).isPresent()) {
+            orders.forEach(orderRepository::createOrUpdate);
+            return orders.stream().map(orderConverter::toDto).toList();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void exportOrdersToCsv(HttpServletResponse response, int userId) throws ExportToFIleException {
+        response.setContentType("text/csv");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=ordersOfUserWithId" + userId + ".csv";
+        response.setHeader(headerKey, headerValue);
+        response.setCharacterEncoding("UTF-8");
+
+        List<OrderDto> dtoOrders = orderRepository.findByUserId(userId).stream().map(orderConverter::toDto).toList();
+
+        try (ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE)) {
+            String[] csvHeader = {"Order ID", "Created at", "Products", "Total price", "User ID"};
+            String[] nameMapping = {"id", "createdAt", "products", "price", "userId"};
+
+            csvWriter.writeHeader(csvHeader);
+
+            for (OrderDto orderDto : dtoOrders) {
+                csvWriter.write(orderDto, nameMapping);
+            }
+        } catch (IOException e) {
+            throw new ExportToFIleException("Во время записи в файл произошла непредвиденная ошибка. Попробуйте позже.");
+        }
+    }
+
+    private List<OrderDto> parseCsv(MultipartFile file) {
+        if (Optional.ofNullable(file).isPresent()) {
+            try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+                CsvToBean<OrderDto> csvToBean = new CsvToBeanBuilder<OrderDto>(reader)
+                        .withType(OrderDto.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withSeparator(',')
+                        .build();
+
+                return csvToBean.parse();
+            } catch (Exception ex) {
+                throw new ParsingException(String.format("Ошибка во время преобразования данных: %s", ex.getMessage()));
+            }
+        }
+        return Collections.emptyList();
     }
 }
