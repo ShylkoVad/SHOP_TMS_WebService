@@ -3,12 +3,26 @@ package by.teachmeskills.shopwebservice.services.impl;
 import by.teachmeskills.shopwebservice.domain.Product;
 import by.teachmeskills.shopwebservice.dto.ProductDto;
 import by.teachmeskills.shopwebservice.dto.converters.ProductConverter;
+import by.teachmeskills.shopwebservice.exceptions.ExportToFIleException;
+import by.teachmeskills.shopwebservice.exceptions.ParsingException;
 import by.teachmeskills.shopwebservice.repositories.ProductRepository;
 import by.teachmeskills.shopwebservice.services.ProductService;
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.supercsv.io.CsvBeanWriter;
+import org.supercsv.io.ICsvBeanWriter;
+import org.supercsv.prefs.CsvPreference;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,5 +77,61 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(int id) {
         productRepository.delete(id);
+    }
+    @Override
+    public List<ProductDto> importProductsFromCsv(MultipartFile file) {
+        List<ProductDto> csvProducts = parseCsv(file);
+        List<Product> orders = Optional.ofNullable(csvProducts)
+                .map(list -> list.stream()
+                        .map(productConverter::fromDto)
+                        .toList())
+                .orElse(null);
+        if (Optional.ofNullable(orders).isPresent()) {
+            orders.forEach(productRepository::createOrUpdate);
+            return orders.stream().map(productConverter::toDto).toList();
+        }
+        return Collections.emptyList();
+    }
+
+    @Override
+    public void exportProductsToCsv(HttpServletResponse response, int categoryId) throws ExportToFIleException {
+        response.setContentType("text/csv");
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=productsOfCategoryWithId" + categoryId + ".csv";
+        response.setHeader(headerKey, headerValue);
+        response.setCharacterEncoding("UTF-8");
+
+        List<ProductDto> dtoProducts = productRepository.findAllByCategoryId(categoryId).stream().map(productConverter::toDto).toList();
+
+        try (ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE)) {
+            String[] csvHeader = {"Product ID", "Name", "Descriptions", "Price", "Category ID"};
+            String[] nameMapping = {"id", "name", "description", "price", "categoryId"};
+
+            csvWriter.writeHeader(csvHeader);
+
+            for (ProductDto productDto : dtoProducts) {
+                csvWriter.write(productDto, nameMapping);
+            }
+        } catch (IOException e) {
+            throw new ExportToFIleException("Во время записи в файл произошла непредвиденная ошибка. Попробуйте позже.");
+        }
+    }
+
+    private List<ProductDto> parseCsv(MultipartFile file) {
+        if (Optional.ofNullable(file).isPresent()) {
+            try (Reader reader = new BufferedReader(new InputStreamReader(file.getInputStream()))) {
+                CsvToBean<ProductDto> csvToBean = new CsvToBeanBuilder<ProductDto>(reader)
+                        .withType(ProductDto.class)
+                        .withIgnoreLeadingWhiteSpace(true)
+                        .withSeparator(',')
+                        .build();
+
+                return csvToBean.parse();
+            } catch (Exception ex) {
+                throw new ParsingException(String.format("Ошибка во время преобразования данных: %s", ex.getMessage()));
+            }
+        }
+        return Collections.emptyList();
     }
 }

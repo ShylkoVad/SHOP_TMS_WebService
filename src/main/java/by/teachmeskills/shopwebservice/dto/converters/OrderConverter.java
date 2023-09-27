@@ -3,7 +3,6 @@ package by.teachmeskills.shopwebservice.dto.converters;
 import by.teachmeskills.shopwebservice.domain.Order;
 import by.teachmeskills.shopwebservice.dto.OrderDto;
 import by.teachmeskills.shopwebservice.repositories.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -23,7 +22,7 @@ public class OrderConverter {
     public OrderDto toDto(Order order) {
         return Optional.ofNullable(order).map(o -> OrderDto.builder()
                         .id(o.getId())
-                        .createdAt(o.getCreatedAt().toLocalDate().atStartOfDay())
+                        .createdAt(o.getCreatedAt().toLocalDateTime())
                         .products(Optional.ofNullable(o.getProducts()).map(products -> products.stream()
                                 .map(productConverter::toDto).toList()).orElse(List.of()))
                         .price(o.getPrice())
@@ -36,7 +35,7 @@ public class OrderConverter {
         return Order.builder()
                 .user(userRepository.findById(orderDto.getUserId()))
                 .price(orderDto.getPrice())
-                .createdAt(Timestamp.valueOf(orderDto.getCreatedAt()).toLocalDateTime())
+                .createdAt(Timestamp.valueOf(orderDto.getCreatedAt()))
                 .build();
     }
 }
