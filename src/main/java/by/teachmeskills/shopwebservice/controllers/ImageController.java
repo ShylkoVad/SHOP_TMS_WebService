@@ -49,7 +49,7 @@ public class ImageController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Images not found - server error"
+                            description = "Images not found"
                     )
             }
     )
@@ -91,7 +91,7 @@ public class ImageController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Image not created - server error"
+                    description = "Image not created"
             )
     })
     @PostMapping
@@ -111,7 +111,7 @@ public class ImageController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Image not updated - server error"
+                    description = "Image not updated"
             )
     })
     @PutMapping
@@ -130,7 +130,7 @@ public class ImageController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Image not deleted - server error"
+                    description = "Image not deleted"
             )
     })
     @DeleteMapping("/{id}")

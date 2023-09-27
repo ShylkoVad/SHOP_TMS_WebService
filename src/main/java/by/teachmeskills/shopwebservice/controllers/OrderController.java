@@ -55,7 +55,7 @@ public class OrderController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Orders not found - server error"
+                            description = "Orders not found"
                     )
             }
     )
@@ -161,7 +161,7 @@ public class OrderController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Order not created - server error"
+                    description = "Order not created"
             )
     })
     @PostMapping
@@ -181,7 +181,7 @@ public class OrderController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Order not updated - server error"
+                    description = "Order not updated"
             )
     })
     @PutMapping
@@ -200,7 +200,7 @@ public class OrderController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Order not deleted - server error"
+                    description = "Order not deleted"
             )
     })
     @DeleteMapping("/{id}")
@@ -246,7 +246,7 @@ public class OrderController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Orders not exported - bad request"
+                            description = "Orders not exported"
                     )
             }
     )

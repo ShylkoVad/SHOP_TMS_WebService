@@ -50,7 +50,7 @@ public class UserController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Users not found - server error"
+                            description = "Users not found"
                     )
             }
     )
@@ -113,7 +113,7 @@ public class UserController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "User not created - server error"
+                    description = "User not created"
             )
     })
     @PostMapping
@@ -133,7 +133,7 @@ public class UserController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "User not updated - server error"
+                    description = "User not updated"
             )
     })
     @PutMapping

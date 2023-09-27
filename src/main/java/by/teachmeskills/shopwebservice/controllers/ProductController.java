@@ -53,7 +53,7 @@ public class ProductController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Products not found - server error"
+                            description = "Products not found"
                     )
             }
     )
@@ -138,7 +138,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Product not created - server error"
+                    description = "Product not created"
             )
     })
     @PostMapping
@@ -158,7 +158,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Product not updated - server error"
+                    description = "Product not updated"
             )
     })
     @PutMapping
@@ -177,7 +177,7 @@ public class ProductController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Product not deleted - server error"
+                    description = "Product not deleted"
             )
     })
     @DeleteMapping("/{id}")
@@ -222,7 +222,7 @@ public class ProductController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Products not exported - bad request"
+                            description = "Products not exported"
                     )
             }
     )

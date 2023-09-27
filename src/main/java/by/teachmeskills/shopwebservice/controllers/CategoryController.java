@@ -53,7 +53,7 @@ public class CategoryController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Categories not found - server error"
+                            description = "Categories not found"
                     )
             }
     )
@@ -74,7 +74,7 @@ public class CategoryController {
             ),
             @ApiResponse(
                     responseCode = "403",
-                    description = "Category not fount - forbidden operation"
+                    description = "Category not fount"
             )
     })
     @GetMapping("/{id}")
@@ -96,7 +96,7 @@ public class CategoryController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Category not created - server error"
+                    description = "Category not created"
             )
     })
     @PostMapping
@@ -116,7 +116,7 @@ public class CategoryController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Category not updated - server error"
+                    description = "Category not updated"
             )
     })
     @PutMapping
@@ -135,7 +135,7 @@ public class CategoryController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Category not deleted - server error"
+                    description = "Category not deleted"
             )
     })
     @DeleteMapping("/{id}")
@@ -156,7 +156,7 @@ public class CategoryController {
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Categories not added - server error"
+                            description = "Categories not added"
                     )
             }
     )
@@ -179,7 +179,7 @@ public class CategoryController {
                     ),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Categories not exported - bad request"
+                            description = "Categories not exported"
                     )
             }
     )

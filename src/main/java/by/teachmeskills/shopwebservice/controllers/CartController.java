@@ -43,7 +43,7 @@ public class CartController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Product not added - server error"
+                    description = "Product not added"
             )
     })
     @PostMapping
@@ -62,7 +62,7 @@ public class CartController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Product not deleted - server error"
+                    description = "Product not deleted"
             )
     })
     @DeleteMapping("/{id}")
@@ -82,7 +82,7 @@ public class CartController {
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Shopping cart not cleaned - server error"
+                    description = "Shopping cart not cleaned"
             )
     })
     @DeleteMapping("/clearCart")
