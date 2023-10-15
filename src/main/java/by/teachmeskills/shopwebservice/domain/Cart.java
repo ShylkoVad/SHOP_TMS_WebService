@@ -12,11 +12,13 @@ import java.util.Map;
 @Component
 public class Cart {
     private Map<Integer, Product> products;
+
     @Getter
-    private double totalPrice = 0;
+    private double totalPrice;
 
     public Cart() {
         this.products = new HashMap<>();
+        this.totalPrice = 0;
     }
 
     public void addProduct(Product product) {
@@ -40,3 +42,4 @@ public class Cart {
         products.clear();
     }
 }
+
