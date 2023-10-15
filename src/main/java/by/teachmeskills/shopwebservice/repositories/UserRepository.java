@@ -1,18 +1,14 @@
 package by.teachmeskills.shopwebservice.repositories;
 
 import by.teachmeskills.shopwebservice.domain.User;
-import by.teachmeskills.shopwebservice.exceptions.LoginException;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Optional;
 
-public interface UserRepository {
-    User findById(int id);
+@Repository
+public interface UserRepository extends JpaRepository<User, Integer> {
+    User findByEmailAndPassword(String email, String password);
 
-    User findByEmailAndPassword(String email, String password) throws LoginException;
-
-    List<User> findAll();
-
-    User createOrUpdate(User user);
-
-    void delete(int id);
+    Optional<User> findByEmail(String email);
 }

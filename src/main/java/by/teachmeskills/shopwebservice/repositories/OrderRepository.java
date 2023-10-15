@@ -1,20 +1,15 @@
 package by.teachmeskills.shopwebservice.repositories;
 
 import by.teachmeskills.shopwebservice.domain.Order;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface OrderRepository {
-    Order findById(int id);
-
-    Order findByDate(LocalDateTime date);
+@Repository
+public interface OrderRepository extends JpaRepository<Order, Integer> {
+    List<Order> findByCreatedAt(LocalDateTime date);
 
     List<Order> findByUserId(int id);
-
-    List<Order> findAll();
-
-    Order createOrUpdate(Order order);
-
-    void delete(int id);
 }

@@ -1,19 +1,17 @@
 package by.teachmeskills.shopwebservice.repositories;
 
 import by.teachmeskills.shopwebservice.domain.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-public interface ProductRepository {
-    Product findById(int id);
-
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Integer>, JpaSpecificationExecutor<Product> {
     List<Product> findAllByCategoryId(int categoryId);
 
-    List<Product> findAllBySearchParameter(String parameter);
-
-    List<Product> findAll();
-
-    Product createOrUpdate(Product product);
-
-    void delete(int id);
+    Page<Product> findAllByCategoryId(int categoryId, Pageable pageable);
 }

@@ -1,9 +1,10 @@
 package by.teachmeskills.shopwebservice.repositories;
 
-import by.teachmeskills.shopwebservice.domain.Category;
+import by.teachmeskills.shopwebservice.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Integer> {
+    Role findByName(String name);
 }
