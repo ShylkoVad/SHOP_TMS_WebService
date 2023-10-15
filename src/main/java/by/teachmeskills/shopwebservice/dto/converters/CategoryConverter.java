@@ -1,6 +1,7 @@
 package by.teachmeskills.shopwebservice.dto.converters;
 
 import by.teachmeskills.shopwebservice.domain.Category;
+import by.teachmeskills.shopwebservice.domain.Image;
 import by.teachmeskills.shopwebservice.dto.CategoryDto;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ public class CategoryConverter {
                         .name(c.getName())
                         .products(Optional.ofNullable(c.getProducts()).map(products -> products.stream()
                                 .map(productConverter::toDto).toList()).orElse(List.of()))
+                        .imagePath(c.getImage().getImagePath())
                         .build())
                 .orElse(null);
     }
@@ -28,7 +30,11 @@ public class CategoryConverter {
     public Category fromDto(CategoryDto categoryDto) {
         return Optional.ofNullable(categoryDto).map(cd -> Category.builder()
                         .name(cd.getName())
-                        .build())
+                        .image(Image.builder()
+                                .imagePath(cd.getImagePath())
+                                .primaryImage(1)
+                                .build()
+                        ).build())
                 .orElse(null);
     }
 }

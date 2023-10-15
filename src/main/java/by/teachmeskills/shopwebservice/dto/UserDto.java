@@ -40,4 +40,5 @@ public class UserDto {
     @NotBlank(message = "Поле должно быть заполнено!")
     private String password;
     private List<OrderDto> orders;
+    private List<RoleDto> roles;
 }

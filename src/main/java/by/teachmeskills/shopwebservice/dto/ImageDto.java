@@ -1,7 +1,5 @@
 package by.teachmeskills.shopwebservice.dto;
 
-import by.teachmeskills.shopwebservice.domain.Category;
-import by.teachmeskills.shopwebservice.domain.Product;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ImageDto {
+
     private int id;
 
     @NotBlank(message = "Поле должно быть заполнено!")
@@ -27,8 +26,4 @@ public class ImageDto {
     @Min(value = 0, message = "Значение 0 - второстепенное изображение.")
     @Max(value = 1, message = "Значение 1 - главное изображение.")
     private int primaryImage;
-
-    private Product product;
-
-    private Category category;
 }
