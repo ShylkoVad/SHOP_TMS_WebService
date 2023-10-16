@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -165,6 +166,7 @@ public class OrderController {
             )
     })
     @PostMapping
+    @PreAuthorize("hasAuthority('user')")
     public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid OrderDto orderDto) {
         return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.CREATED);
     }
@@ -204,7 +206,7 @@ public class OrderController {
             )
     })
     @DeleteMapping("/{id}")
-    public void deleteUser(@Parameter(required = true, description = "Order ID")
+    public void deleteOrder(@Parameter(required = true, description = "Order ID")
                            @PathVariable int id) {
         orderService.deleteOrder(id);
     }
@@ -228,6 +230,7 @@ public class OrderController {
             }
     )
     @PostMapping("/csv/import")
+    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<OrderDto>> importOrdersFromCsv(@RequestParam("file") MultipartFile file) throws Exception {
         return new ResponseEntity<>(orderService.importOrdersFromCsv(file), HttpStatus.CREATED);
     }
@@ -251,6 +254,7 @@ public class OrderController {
             }
     )
     @GetMapping("/csv/export/{userId}")
+    @PreAuthorize("hasAuthority('admin')")
     public void exportOrdersToCsv(HttpServletResponse response, @Parameter(required = true, description = "User ID")
     @PathVariable int userId) throws ExportToFIleException {
         orderService.exportOrdersToCsv(response, userId);
