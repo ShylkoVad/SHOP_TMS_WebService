@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Integer> {
-    List<Order> findByCreatedAt(LocalDateTime date);
+    Order findByCreatedAt(LocalDateTime date);
 
     List<Order> findByUserId(int id);
 }
