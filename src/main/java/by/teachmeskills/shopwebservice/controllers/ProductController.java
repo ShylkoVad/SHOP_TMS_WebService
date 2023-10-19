@@ -143,7 +143,7 @@ public class ProductController {
             )
     })
     @PostMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductDto> createProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.createProduct(productDto), HttpStatus.CREATED);
     }
@@ -164,7 +164,7 @@ public class ProductController {
             )
     })
     @PutMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductDto> updateProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(productService.updateProduct(productDto), HttpStatus.OK);
     }
@@ -184,7 +184,7 @@ public class ProductController {
             )
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteProduct(@Parameter(required = true, description = "Product ID") @PathVariable int id) {
         productService.deleteProduct(id);
     }
@@ -231,7 +231,7 @@ public class ProductController {
             }
     )
     @GetMapping("/csv/export/{categoryId}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void exportProductsToCsv(HttpServletResponse response, @Parameter(required = true, description = "Category ID") @PathVariable int categoryId) throws ExportToFIleException {
         productService.exportProductsToCsv(response, categoryId);
     }

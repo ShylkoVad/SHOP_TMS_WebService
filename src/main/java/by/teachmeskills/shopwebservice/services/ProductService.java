@@ -21,6 +21,7 @@ public interface ProductService {
     ProductDto createProduct(ProductDto productDto);
 
     void deleteProduct(int id);
+
     List<ProductDto> importProductsFromCsv(MultipartFile file) throws Exception;
 
     void exportProductsToCsv(HttpServletResponse response, int categoryId) throws ExportToFIleException;

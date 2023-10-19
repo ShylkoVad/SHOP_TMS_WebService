@@ -1,11 +1,10 @@
 package by.teachmeskills.shopwebservice.controllers;
 
-import by.teachmeskills.shopwebservice.config.JwtProvider;
 import by.teachmeskills.shopwebservice.dto.AuthResponse;
 import by.teachmeskills.shopwebservice.dto.RefreshJwtTokenDto;
 import by.teachmeskills.shopwebservice.dto.UserCredentialsRequest;
 import by.teachmeskills.shopwebservice.dto.UserDto;
-import by.teachmeskills.shopwebservice.exceptions.LoginException;
+import by.teachmeskills.shopwebservice.exceptions.RegistrationException;
 import by.teachmeskills.shopwebservice.services.AuthService;
 import by.teachmeskills.shopwebservice.services.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,13 +38,10 @@ import java.util.Optional;
 public class UserController {
     private final UserService userService;
     private final AuthService authService;
-    private final JwtProvider jwtProvider;
 
-
-    public UserController(UserService userService, AuthService authService, JwtProvider jwtProvider) {
+    public UserController(UserService userService, AuthService authService) {
         this.userService = userService;
         this.authService = authService;
-        this.jwtProvider = jwtProvider;
     }
 
     @Operation(
@@ -67,7 +63,7 @@ public class UserController {
             }
     )
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return new ResponseEntity<>(userService.getAll(), HttpStatus.OK);
     }
@@ -88,7 +84,7 @@ public class UserController {
             )
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> getUserById(@Parameter(required = true, description = "User ID") @PathVariable int id) {
         return Optional.ofNullable(userService.getUser(id)).map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -132,6 +128,7 @@ public class UserController {
     public AuthResponse getNewAccessToken(@RequestBody @Valid RefreshJwtTokenDto refreshTokenRequest) {
         return authService.getAccessToken(refreshTokenRequest);
     }
+
     @Operation(
             summary = "Refresh security token",
             description = "Get new access token",
@@ -168,7 +165,7 @@ public class UserController {
             )
     })
     @PostMapping
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) throws RegistrationException {
         return new ResponseEntity<>(userService.createUser(userDto), HttpStatus.CREATED);
     }
 
@@ -188,6 +185,7 @@ public class UserController {
             )
     })
     @PutMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> updateUser(@RequestBody @Valid UserDto userDto) {
         return new ResponseEntity<>(userService.updateUser(userDto), HttpStatus.OK);
     }
@@ -207,6 +205,7 @@ public class UserController {
             )
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteUser(@Parameter(required = true, description = "User ID")
                            @PathVariable int id) {
         userService.deleteUser(id);
@@ -228,6 +227,7 @@ public class UserController {
             )
     })
     @PostMapping("/updateRole")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> updateUserRole(@RequestBody @Valid UserDto userDto) {
         return new ResponseEntity<>(userService.updateUserRole(userDto), HttpStatus.OK);
     }

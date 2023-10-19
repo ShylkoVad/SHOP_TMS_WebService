@@ -101,7 +101,7 @@ public class CategoryController {
             )
     })
     @PostMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return new ResponseEntity<>(categoryService.createCategory(categoryDto), HttpStatus.CREATED);
     }
@@ -122,7 +122,7 @@ public class CategoryController {
             )
     })
     @PutMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CategoryDto> updateCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return new ResponseEntity<>(categoryService.updateCategory(categoryDto), HttpStatus.OK);
     }
@@ -142,10 +142,11 @@ public class CategoryController {
             )
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteCategory(@Parameter(required = true, description = "Category ID") @PathVariable int id) {
         categoryService.deleteCategory(id);
     }
+
     @Operation(
             summary = "Import new categories",
             description = "Add new categories to Shop database from csv file",
@@ -165,7 +166,6 @@ public class CategoryController {
             }
     )
     @PostMapping("/csv/import")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<CategoryDto>> importCategoriesFromCsv(@RequestParam("file") MultipartFile file) {
         return new ResponseEntity<>(categoryService.importCategoriesFromCsv(file), HttpStatus.CREATED);
     }
@@ -189,7 +189,7 @@ public class CategoryController {
             }
     )
     @GetMapping("/csv/export")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void exportCategoriesToCsv(HttpServletResponse response) throws ExportToFIleException {
         categoryService.exportCategoriesToCsv(response);
     }

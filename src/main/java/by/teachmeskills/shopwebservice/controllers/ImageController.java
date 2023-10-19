@@ -55,7 +55,7 @@ public class ImageController {
             }
     )
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<List<ImageDto>> getAllImages() {
         return new ResponseEntity<>(imageService.getAllImages(), HttpStatus.OK);
     }
@@ -76,7 +76,7 @@ public class ImageController {
             )
     })
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ImageDto> getImageById(@Parameter(required = true, description = "Image ID") @PathVariable int id) {
         return Optional.ofNullable(imageService.getImage(id)).map(dto -> new ResponseEntity<>(dto, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
@@ -98,7 +98,7 @@ public class ImageController {
             )
     })
     @PostMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ImageDto> createImage(@RequestBody @Valid ImageDto imageDto) {
         return new ResponseEntity<>(imageService.createImage(imageDto), HttpStatus.CREATED);
     }
@@ -119,7 +119,7 @@ public class ImageController {
             )
     })
     @PutMapping
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ImageDto> updateImage(@RequestBody @Valid ImageDto imageDto) {
         return new ResponseEntity<>(imageService.updateImage(imageDto), HttpStatus.OK);
     }
@@ -139,7 +139,7 @@ public class ImageController {
             )
     })
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteImage(@Parameter(required = true, description = "Image ID")
                             @PathVariable int id) {
         imageService.deleteImage(id);

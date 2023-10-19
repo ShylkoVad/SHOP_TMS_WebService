@@ -166,7 +166,7 @@ public class OrderController {
             )
     })
     @PostMapping
-    @PreAuthorize("hasAuthority('user')")
+    @PreAuthorize("hasAuthority({'USER', 'ADMIN'})")
     public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid OrderDto orderDto) {
         return new ResponseEntity<>(orderService.createOrder(orderDto), HttpStatus.CREATED);
     }
@@ -207,7 +207,7 @@ public class OrderController {
     })
     @DeleteMapping("/{id}")
     public void deleteOrder(@Parameter(required = true, description = "Order ID")
-                           @PathVariable int id) {
+                            @PathVariable int id) {
         orderService.deleteOrder(id);
     }
 
@@ -230,7 +230,6 @@ public class OrderController {
             }
     )
     @PostMapping("/csv/import")
-    @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<List<OrderDto>> importOrdersFromCsv(@RequestParam("file") MultipartFile file) throws Exception {
         return new ResponseEntity<>(orderService.importOrdersFromCsv(file), HttpStatus.CREATED);
     }
@@ -254,7 +253,7 @@ public class OrderController {
             }
     )
     @GetMapping("/csv/export/{userId}")
-    @PreAuthorize("hasAuthority('admin')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void exportOrdersToCsv(HttpServletResponse response, @Parameter(required = true, description = "User ID")
     @PathVariable int userId) throws ExportToFIleException {
         orderService.exportOrdersToCsv(response, userId);

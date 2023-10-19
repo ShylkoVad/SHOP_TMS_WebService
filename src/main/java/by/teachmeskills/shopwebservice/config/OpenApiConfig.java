@@ -103,6 +103,7 @@ public class OpenApiConfig {
                 .components(new Components()
                         .addSecuritySchemes(securitySchema, createSecurityScheme()));
     }
+
     private SecurityScheme createSecurityScheme() {
         return new SecurityScheme().name("Shop")
                 .type(SecurityScheme.Type.HTTP)
