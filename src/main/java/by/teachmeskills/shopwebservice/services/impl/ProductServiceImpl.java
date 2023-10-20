@@ -39,7 +39,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProduct(int id) {
-        return productConverter.toDto(productRepository.findById(id));
+        return productConverter.toDto(productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Продукта с id %d е найдено.", id))));
     }
 
     @Override
@@ -59,25 +60,28 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto updateProduct(ProductDto productDto) {
-        Product product = Optional.ofNullable(productRepository.findById(productDto.getId()))
+        Product product = productRepository.findById(productDto.getId())
                 .orElseThrow(() -> new EntityNotFoundException(String.format("Продукта с id %d не найдено.", productDto.getId())));
         product.setName(productDto.getName());
         product.setDescription(productDto.getDescription());
         product.setPrice(productDto.getPrice());
-        return productConverter.toDto(productRepository.createOrUpdate(product));
+        return productConverter.toDto(productRepository.save(product));
     }
 
     @Override
     public ProductDto createProduct(ProductDto productDto) {
         Product product = productConverter.fromDto(productDto);
-        product = productRepository.createOrUpdate(product);
+        product = productRepository.save(product);
         return productConverter.toDto(product);
     }
 
     @Override
     public void deleteProduct(int id) {
-        productRepository.delete(id);
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(String.format("Продукта с id %d не найдено.", id)));
+        productRepository.delete(product);
     }
+
     @Override
     public List<ProductDto> importProductsFromCsv(MultipartFile file) {
         List<ProductDto> csvProducts = parseCsv(file);
@@ -87,7 +91,7 @@ public class ProductServiceImpl implements ProductService {
                         .toList())
                 .orElse(null);
         if (Optional.ofNullable(orders).isPresent()) {
-            orders.forEach(productRepository::createOrUpdate);
+            orders.forEach(productRepository::save);
             return orders.stream().map(productConverter::toDto).toList();
         }
         return Collections.emptyList();
@@ -105,8 +109,8 @@ public class ProductServiceImpl implements ProductService {
         List<ProductDto> dtoProducts = productRepository.findAllByCategoryId(categoryId).stream().map(productConverter::toDto).toList();
 
         try (ICsvBeanWriter csvWriter = new CsvBeanWriter(response.getWriter(), CsvPreference.STANDARD_PREFERENCE)) {
-            String[] csvHeader = {"Product ID", "Name", "Descriptions", "Price", "Category ID"};
-            String[] nameMapping = {"id", "name", "description", "price", "categoryId"};
+            String[] csvHeader = {"Product ID", "Name", "Descriptions", "Price", "Category ID", "Images"};
+            String[] nameMapping = {"id", "name", "description", "price", "categoryId", "images"};
 
             csvWriter.writeHeader(csvHeader);
 

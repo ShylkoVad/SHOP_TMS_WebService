@@ -3,6 +3,7 @@ package by.teachmeskills.shopwebservice.dto.converters;
 import by.teachmeskills.shopwebservice.domain.Order;
 import by.teachmeskills.shopwebservice.dto.OrderDto;
 import by.teachmeskills.shopwebservice.repositories.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -33,7 +34,8 @@ public class OrderConverter {
 
     public Order fromDto(OrderDto orderDto) {
         return Order.builder()
-                .user(userRepository.findById(orderDto.getUserId()))
+                .user(userRepository.findById(orderDto.getUserId())
+                        .orElseThrow(() -> new EntityNotFoundException(String.format("Пользователя с id %d не найдено.", orderDto.getUserId()))))
                 .price(orderDto.getPrice())
                 .createdAt(Timestamp.valueOf(orderDto.getCreatedAt()))
                 .build();

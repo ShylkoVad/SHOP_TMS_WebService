@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +48,7 @@ public class CartController {
             )
     })
     @PostMapping
+    @PreAuthorize("hasAuthority({'USER', 'ADMIN'})")
     public ResponseEntity<CartDto> addProduct(@RequestBody @Valid ProductDto productDto) {
         return new ResponseEntity<>(cartService.addProductToCart(productDto), HttpStatus.OK);
     }
@@ -66,6 +68,7 @@ public class CartController {
             )
     })
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority({'USER', 'ADMIN'})")
     public void deleteProduct(@Parameter(required = true, description = "Product ID")
                               @PathVariable int id) throws EntityNotFoundException {
         cartService.removeProductFromCart(id);
@@ -86,6 +89,7 @@ public class CartController {
             )
     })
     @DeleteMapping("/clearCart")
+    @PreAuthorize("hasAuthority({'USER', 'ADMIN'})")
     public void clearShoppingCart() {
         cartService.clear();
     }
